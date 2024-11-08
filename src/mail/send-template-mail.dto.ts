@@ -12,7 +12,6 @@ export class SendTemplateMailDto {
   @ApiProperty({ description: '模板' })
   @IsString()
   readonly template: string;
-
   @ApiProperty({ description: '標籤' })
   @IsString()
   readonly tag: string;

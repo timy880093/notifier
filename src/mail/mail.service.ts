@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { SendTemplateMailDto } from './send-template-mail.dto';
 import { ISendMailOptions, MailerService } from '@nestjs-modules/mailer';
+import { Injectable } from '@nestjs/common';
 import * as fs from 'fs/promises';
-import { join } from 'path';
-import _ from 'lodash';
-import { SendHbsTemplateDto } from './send-hbs-template.dto';
 import Handlebars from 'handlebars';
+import _ from 'lodash';
+import { join } from 'path';
+import { SendHbsContentDto } from './send-hbs-template.dto';
+import { SendTemplateMailDto } from './send-template-mail.dto';
 
 @Injectable()
 export class MailService {
@@ -26,11 +26,11 @@ export class MailService {
       .map((file) => file.replace('.hbs', ''));
   }
 
-  async sendHbsTemplateMail(dto: SendHbsTemplateDto) {
-    if (!this.templates.includes(dto.template))
+  async sendHbsTemplateMail(dto: SendHbsContentDto) {
+    if (!this.templates.includes(dto.html))
       throw new Error('Template not found');
     console.log('sendHbsTemplateMail: ', dto);
-    const template = Handlebars.compile(dto.template);
+    const template = Handlebars.compile(dto.html);
     const html = template(dto.context);
     return this.sendRequest(dto);
     // const emailReceivers = this.parseRequest(receivers);

@@ -2,17 +2,17 @@ import { ISendMailOptions } from '@nestjs-modules/mailer';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsObject, IsOptional, IsString } from 'class-validator';
 
-export class SendHbsTemplateDto {
-  @ApiProperty({ description: '模板' })
+export class SendHbsContentDto {
+  @ApiProperty({ description: '標題' })
+  readonly subject: string;
+
+  @ApiProperty({ description: '模板 html' })
   @IsString()
-  readonly template: string;
+  readonly html: string;
 
   @ApiProperty({ description: '標籤' })
   @IsString()
   readonly tag: string;
-
-  @ApiProperty({ description: '標題' })
-  readonly subject: string;
 
   @IsOptional()
   @IsString()
@@ -38,7 +38,7 @@ export class SendHbsTemplateDto {
         context = { ...this.context, username: receiver.username };
       }
       return {
-        template: this.template,
+        template: this.html,
         subject: this.subject,
         from: this.from,
         to: receiver.email,
