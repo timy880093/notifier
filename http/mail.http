@@ -1,0 +1,18 @@
+POST http://localhost:3000/mail/mjml
+Content-Type: application/json
+
+{
+  "subject": "test",
+  "tag": "",
+  "from": "\"罰單申訴\" <noreply@mail.lawslog.com>",
+  "receivers": [
+    {
+      "email": "timmy@suodata.com",
+      "name": ""
+    }
+  ],
+  "mjmlCode": "",
+  "context": {
+    "test": "test"
+  }
+}

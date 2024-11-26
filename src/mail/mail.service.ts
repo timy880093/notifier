@@ -1,38 +1,36 @@
 import { ISendMailOptions, MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
-import * as fs from 'fs/promises';
-import Handlebars from 'handlebars';
 import _ from 'lodash';
-import { join } from 'path';
-import { SendHbsContentDto } from './send-hbs-template.dto';
-import { SendTemplateMailDto } from './send-template-mail.dto';
+import { SendMjmlDto } from './send-mjml.dto';
+import { SendMailDto } from './send-mail.dto';
+import mailConfig from './mail.config';
 
 @Injectable()
 export class MailService {
-  constructor(private readonly mailerService: MailerService) {}
+  constructor(private readonly mailerService: MailerService) {
+    console.log('MailService init: ', mailConfig());
+  }
 
   private templates = [];
 
-  async onModuleInit() {
-    this.templates = await this.readTemplates(
-      join(__dirname, '/mail/templates'),
-    );
-  }
+  // async onModuleInit() {
+  //   this.templates = await this.readTemplates(
+  //     join(__dirname, '/mail/templates'),
+  //   );
+  // }
 
-  async readTemplates(path: string) {
-    const files = await fs.readdir(path);
-    return files
-      .filter((file) => file.endsWith('.hbs'))
-      .map((file) => file.replace('.hbs', ''));
-  }
+  // async readTemplates(path: string) {
+  //   const files = await fs.readdir(path);
+  //   return files
+  //     .filter((file) => file.endsWith('.hbs'))
+  //     .map((file) => file.replace('.hbs', ''));
+  // }
 
-  async sendHbsTemplateMail(dto: SendHbsContentDto) {
-    if (!this.templates.includes(dto.html))
-      throw new Error('Template not found');
-    console.log('sendHbsTemplateMail: ', dto);
-    const template = Handlebars.compile(dto.html);
-    const html = template(dto.context);
-    return this.sendRequest(dto);
+  async sendMjml(dto: SendMjmlDto) {
+    const sendMjmlDto = new SendMjmlDto(dto);
+    // const template = Handlebars.compile(dto.mjmlCode);
+    // const html = template(dto.context);
+    return this.sendRequest(sendMjmlDto);
     // const emailReceivers = this.parseRequest(receivers);
     // return this.sendRequest(
     //   this.getEmails(emailReceivers),
@@ -41,20 +39,14 @@ export class MailService {
     // );
   }
 
-  async sendByTemplate(dto: SendTemplateMailDto) {
-    if (!this.templates.includes(dto.template))
-      throw new Error('Template not found');
-    console.log('sendByTemplate: ', dto);
-    return this.sendRequest(dto);
-    // const emailReceivers = this.parseRequest(receivers);
-    // return this.sendRequest(
-    //   this.getEmails(emailReceivers),
-    //   this.parseTemplate(subject, template, context, from),
-    //   tag,
-    // );
-  }
+  // async sendByTemplate(dto: SendTemplateMailDto) {
+  //   if (!this.templates.includes(dto.template))
+  //     throw new Error('Template not found');
+  //   console.log('sendByTemplate: ', dto);
+  //   return this.sendRequest(dto);
+  // }
 
-  async sendRequest(dto: SendTemplateMailDto) {
+  async sendRequest(dto: SendMailDto) {
     const errorEmail = [];
     const batchSize = 20;
     const optionsArray = dto.toMailOptions();
@@ -63,7 +55,9 @@ export class MailService {
         const tasks = batch.map(async (option) => {
           // 可根據 tag 分析點擊率，也可多個 tag
           // const result = await this.sendMail({ ...option, headers: { 'x-mailgun-tag': dto.tag } });
+          console.log('sendMail before: ', option);
           const result = await this.sendMail(option);
+          console.log('sendMail result: ', result);
           if (!result) errorEmail.push(option);
         });
         await Promise.all(tasks);

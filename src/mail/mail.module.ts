@@ -21,7 +21,7 @@ import mailConfig from './mail.config';
             },
           },
           defaults: {
-            from: '"lawplayer" <noreply@mail.lawslog.com>',
+            from: mailConfig().from,
           },
           // template: {
           //   dir: mailConfig().templateDir,
