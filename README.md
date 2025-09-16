@@ -1,6 +1,6 @@
 ## 專案概述
 
-notifier 是一個以 NestJS 建立的郵件發送微服務範例。主要職責為接收 HTTP 請求（目前以 MJML 為主），將 MJML 轉為 HTML 後透過 Nodemailer 傳送郵件。專案同時產生 Swagger 規格檔（`swagger-spec.json`）並在 `/api` 提供 Swagger UI。
+notifier 是一個以 NestJS 建立的郵件發送服務範例。主要職責為接收 HTTP 請求（目前以 MJML 為主），將 MJML 轉為 HTML 後透過 Nodemailer 傳送郵件。專案同時產生 Swagger 規格檔（`swagger-spec.json`）並在 `/api` 提供 Swagger UI。
 
 ## 主要功能
 
